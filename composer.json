@@ -1,0 +1,21 @@
+{
+    "name": "puzzle/simple-dispatcher",
+    "type": "library",
+    "description": "Simple and lightweight event dispatching tool",
+    "keywords": ["events", "event dispatcher", "lightweight"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Maciej Garycki",
+            "email": "maciekgarycki@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "autoload": {
+        "psr-0": { "Puzzle\\SimpleDispatcher\\": "" }
+    },
+    "target-dir": "Puzzle/SimpleDispatcher",
+    "minimum-stability": "dev"
+}
