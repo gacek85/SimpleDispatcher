@@ -91,7 +91,7 @@ class EventDispatcher implements DispatcherInterface {
     public function dispatch (EventInterface $event) {
         $name = $event->getName();
         $listeners = $this->getListeners($name);
-        static::executeListeners($listeners, $event);
+        $this->executeListeners($listeners, $event);
         
     }
 
