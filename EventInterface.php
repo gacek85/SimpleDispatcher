@@ -59,5 +59,13 @@ interface EventInterface {
      * @param mixed $value
      */
     public function setParameter ($name, $value);
+
+    /**
+     * Defines if parameter exists within the event
+     * 
+     * @param string $name
+     * @return bool
+     */
+    public function hasParameter ($name);
     
 }

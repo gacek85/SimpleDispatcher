@@ -77,6 +77,18 @@ class EventTest extends \PHPUnit_Framework_TestCase {
      * @param \Puzzle\SimpleDispatcher\Event $event
      * @param array $parameters Array of mixed param_name -> value
      */
+    public function testHasParameter(Event $event, $parameters) {
+        foreach ($parameters as $name => $parameter) {
+            $this->assertTrue($event->hasParameter($name));
+        }
+    }
+    
+    /**
+     * 
+     * @dataProvider getParameterData
+     * @param \Puzzle\SimpleDispatcher\Event $event
+     * @param array $parameters Array of mixed param_name -> value
+     */
     public function testSetParameter (Event $event_dummy, $parameters) {
         foreach ($parameters as $name => $parameter) {
             $this->event->setParameter($name, $parameter);

@@ -89,4 +89,14 @@ class Event implements EventInterface {
         $this->params[$name] = $value;
     }
     
+    /**
+     * Defines if parameter exists within the event
+     * 
+     * @param string $name
+     * @return bool
+     */
+    public function hasParameter ($name) {
+        return isset($this->params[$name]);
+    }
+    
 }
