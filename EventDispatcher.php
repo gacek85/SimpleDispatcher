@@ -51,19 +51,20 @@ class EventDispatcher implements DispatcherInterface {
      *                         functions/methods
      * @param \Puzzle\SimpleDispatcher\Event $event
      */
-    public static function executeListeners (array $listeners, EventInterface $event) {
+    public function executeListeners (array $listeners, EventInterface $event) {
+        
         foreach ($listeners as $listener) {
             if (!$event->isPropagationStopped()) {
-                static::call($listener, $event);
+                $this->call($listener, $event);
             }
         }
     }
 
     
     
-    private static function call ($listener, EventInterface $event) {
+    protected function call ($listener, EventInterface $event) {
         if (is_array($listener)) {
-            static::callArray($listener, $event); // Array of class/object and method
+            $this->callArray($listener, $event); // Array of class/object and method
         } else {
             call_user_func($listener, $event); // Simply callable 
         }
@@ -71,7 +72,7 @@ class EventDispatcher implements DispatcherInterface {
     
     
     
-    private static function callArray ($listener, EventInterface $event) {
+    protected function callArray ($listener, EventInterface $event) {
         if (is_object($listener[0])) {
             call_user_func(array($listener[0], $listener[1]), $event);
         } else {
@@ -100,7 +101,7 @@ class EventDispatcher implements DispatcherInterface {
      * 
      * @param type $name
      * @return array An array of callable (in context of the dispatcher) functions/methods
-     *               that can be executed with an event as a parameter. static method
+     *               that can be executed with an event as a parameter. Method
      *               EventDispatcher::executeListeners() can be used
      */
     public function getListeners ($name) {
@@ -144,10 +145,8 @@ class EventDispatcher implements DispatcherInterface {
      * @throws \InvalidArgumentException
      */
     public function registerListener ($name, $callable_resource_or_string, $ordering = 0) {
+        $this->validateOrdering($ordering);
         $this->event_listeners[$name] = @$this->event_listeners[$name] ?: array();
-        if (!is_numeric($ordering) OR !ctype_digit(strval($ordering)) OR ($ordering < 0)) {
-            throw new \InvalidArgumentException("The ordering provided must be numeric and non-negative!");
-        }
         $this->event_listeners[$name][$ordering] = @$this->event_listeners[$name][$ordering] ?: array();
         
         if (is_array($callable_resource_or_string)) { // May be a 2 indexes array: class name, callable name
@@ -166,6 +165,12 @@ class EventDispatcher implements DispatcherInterface {
         
         $this->event_listeners[$name][$ordering][] = $listener;
     }    
+    
+    protected function validateOrdering ($ordering) {
+        if (!is_numeric($ordering) OR !ctype_digit(strval($ordering)) OR ($ordering < 0)) {
+            throw new \InvalidArgumentException("The ordering provided must be numeric and non-negative!");
+        }
+    }
     
     
     

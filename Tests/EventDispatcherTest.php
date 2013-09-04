@@ -22,7 +22,7 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase {
     /**
      * @var EventDispatcher
      */
-    private $event_dispatcher;
+    protected $event_dispatcher;
 
     
     protected function setUp() {
@@ -142,6 +142,7 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase {
             $this->event_dispatcher->registerListener($event_name, $listener, $order);
         }
         
+        ListenerOrderStubClass::clear();
         $this->event_dispatcher->dispatch($this->getEventMock($event_name));
         
         $ordering_by_listeners = ListenerOrderStubClass::getOrdering();
@@ -156,7 +157,7 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase {
      * @covers \Puzzle\SimpleDispatcher\EventDispatcher::getListeners
      * @dataProvider getRegisterListenersOrder
      */
-    public function testExecuteListeners ($event_name, array $listeners, array $propper_order) {
+    public function testExecuteListenersWithOrder ($event_name, array $listeners, array $propper_order) {
         foreach ($listeners as $listener_order) {
             $listener = $listener_order[0];
             $order = $listener_order[1];
@@ -165,7 +166,9 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase {
         
         $event_mock = $this->getEventMock($event_name);
         $listeners = $this->event_dispatcher->getListeners($event_mock->getName());
-        EventDispatcher::executeListeners($listeners, $event_mock);
+        
+        ListenerOrderStubClass::clear();
+        EventDispatcher::getInstance()->executeListeners($listeners, $event_mock);
         
         $ordering_by_listeners = ListenerOrderStubClass::getOrdering();
         foreach ($propper_order as $key => $value) {
@@ -213,7 +216,7 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase {
     }
     
     
-    private function randomName () {
+    protected function randomName () {
         $letters = 'abcdefghijklmnopqrstuvwxyz';
         $min = 0;
         $max = mb_strlen($letters) - 1;
@@ -254,6 +257,10 @@ class ListenerStubClass {
 class ListenerOrderStubClass {
     
     private static $ordering = array();
+    
+    public static function clear () {
+        self::$ordering = array();
+    }
     
     public static function addCall ($name) {
         self::$ordering[] = $name;
